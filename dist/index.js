@@ -4329,7 +4329,7 @@ const chatPath = 'https://chat9.fastgpt.me/api/openai/v1/chat/completions'
 const requestPayload = { 
     "messages": [
         { "role": "user", "content": "You are a Command Line Interface expert and your task is to provide functioning shell commands. Return a CLI command and nothing else - do not send it in a code block, quotes, or anything else, just the pure text CONTAINING ONLY THE COMMAND. If possible, return a one-line bash command or chain many commands together. Return ONLY the command ready to run in the terminal. The command should do the following:" },
-        { "role": "user", "content": process.argv?.[2] || "centos 安装docker" },
+        { "role": "user", "content": process.argv?.[2] },
     ],
     // "messages": [{ "role": "system", "content": "\nYou are ChatGPT, a large language model trained by OpenAI.\nKnowledge cutoff: 2021-09\nCurrent model: gpt-3.5-turbo\nCurrent time: 2023/8/14 09:07:13\n" }, { "role": "user", "content": "1" } ],
     "stream": true,

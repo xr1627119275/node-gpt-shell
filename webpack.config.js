@@ -2,7 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 module.exports = {
     mode: process.env.NODE_ENV || 'development',
-    target: 'node',
+    target: 'node12.18',
     entry: './src/index.js',
     output: {
       filename: 'index.js',
