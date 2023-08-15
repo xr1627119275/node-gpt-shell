@@ -1,14 +1,15 @@
 {
   "name": "gptshell",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode=production",
     "dev": "webpack --mode=development",
-    "start": "node dist/index.js"
+    "start": "npm run build ; node dist/index.js"
   },
   "bin": {
-    "ai": "./dist/index.js"
+    "ai": "./dist/index.js",
+    "gptshell": "./dist/index.js"
   },
   "keywords": [],
   "author": "xrdev",
