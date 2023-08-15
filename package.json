@@ -5,6 +5,7 @@
   "scripts": {
     "build": "webpack --mode=production",
     "dev": "webpack --mode=development",
+    "watch": "node src/brower.js",
     "start": "npm run build ; node dist/index.js"
   },
   "bin": {
@@ -16,8 +17,11 @@
   "license": "ISC",
   "devDependencies": {
     "@ai-zen/node-fetch-event-source": "^2.1.2",
-    "webpack-cli": "^5.1.4",
-    "node-abort-controller": "^3.1.1"
+    "chalk": "^5.3.0",
+    "commander": "^11.0.0",
+    "inquirer": "^9.2.10",
+    "node-abort-controller": "^3.1.1",
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
     "webpack": "^5.88.2"

@@ -2,7 +2,8 @@ const path = require('path')
 const webpack = require('webpack')
 module.exports = {
     mode: process.env.NODE_ENV || 'development',
-    target: 'node',
+    // target: 'node',
+    target: "browserslist:node 14",
     entry: './src/index.js',
     output: {
       filename: 'index.js',
