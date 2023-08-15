@@ -7804,7 +7804,7 @@ function defaultOnOpen(response) {
 }
 //# sourceMappingURL=fetch.js.map
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = {"i8":"0.0.11"};
+const package_namespaceObject = {"i8":"0.0.12"};
 // EXTERNAL MODULE: ./node_modules/node-abort-controller/index.js
 var node_abort_controller = __webpack_require__(357);
 // EXTERNAL MODULE: ./node_modules/commander/index.js
@@ -7877,8 +7877,9 @@ function chat(msg, isChat) {
         index = 0
         if (!finished && isChat) {
             finished = true
+            console.log('')
            message.push({ role: "system", content: responseText })
-           rl.question('>>>', (answer) => {
+           rl.question('>>> ', (answer) => {
                console.log('answer:', answer)
                chat(answer, true)
            })
@@ -7932,8 +7933,9 @@ function chat(msg, isChat) {
             if (msg.data === "[DONE]" || finished) {
                 setTimeout( () => {
                     process.stdout.write("\n")
-                }, index * 36)
-                return finish();
+                    finish();
+                }, ++index * 36)
+                return 
             }
             const text = msg.data;
             try {
@@ -7981,7 +7983,6 @@ program
     .option('-chat,  --chat', '聊天模式')
     .action(async( message, options ) => {
         const isChat = options.chat
-        console.log(message.join(" "), isChat);
         chat(message.join(" "), isChat)
     })
 

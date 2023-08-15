@@ -50,8 +50,9 @@ function chat(msg, isChat) {
         index = 0
         if (!finished && isChat) {
             finished = true
+            console.log('')
            message.push({ role: "system", content: responseText })
-           rl.question('>>>', (answer) => {
+           rl.question('>>> ', (answer) => {
                console.log('answer:', answer)
                chat(answer, true)
            })
@@ -105,8 +106,9 @@ function chat(msg, isChat) {
             if (msg.data === "[DONE]" || finished) {
                 setTimeout( () => {
                     process.stdout.write("\n")
-                }, index * 36)
-                return finish();
+                    finish();
+                }, ++index * 36)
+                return 
             }
             const text = msg.data;
             try {
@@ -124,7 +126,7 @@ function chat(msg, isChat) {
             }
         },
         onclose() {
-            finish();
+            // finish();
         },
         onerror(e) {
             // options.onError?.(e);
@@ -154,7 +156,6 @@ program
     .option('-chat,  --chat', '聊天模式')
     .action(async( message, options ) => {
         const isChat = options.chat
-        console.log(message.join(" "), isChat);
         chat(message.join(" "), isChat)
     })
 
