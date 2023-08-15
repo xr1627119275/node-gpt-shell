@@ -3,7 +3,8 @@ import {
     EventStreamContentType,
     fetchEventSource,
 } from "@ai-zen/node-fetch-event-source";
-
+import { AbortController } from "node-abort-controller";
+global.AbortController = AbortController
 const chatPath = 'https://chat9.fastgpt.me/api/openai/v1/chat/completions'
 const requestPayload = { 
     "messages": [
@@ -18,11 +19,11 @@ const requestPayload = {
     "frequency_penalty": 0, 
     "top_p": 1 
 }
-// const controller = new AbortController();
+const controller = new AbortController();
 const chatPayload = {
     method: "POST",
     body: JSON.stringify(requestPayload),
-    // signal: controller.signal,
+    signal: controller.signal,
     headers: {
         "Content-Type": "application/json",
         "x-requested-with":"XMLHttpRequest",

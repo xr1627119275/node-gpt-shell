@@ -1,6 +1,6 @@
 {
   "name": "gptshell",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode=production",
@@ -15,7 +15,8 @@
   "license": "ISC",
   "devDependencies": {
     "@ai-zen/node-fetch-event-source": "^2.1.2",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "node-abort-controller": "^3.1.1"
   },
   "dependencies": {
     "webpack": "^5.88.2"

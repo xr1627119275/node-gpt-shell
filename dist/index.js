@@ -32,6 +32,81 @@ exports["default"] = fetch
 
 /***/ }),
 
+/***/ 357:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const { EventEmitter } = __webpack_require__(361);
+
+class AbortSignal {
+  constructor() {
+    this.eventEmitter = new EventEmitter();
+    this.onabort = null;
+    this.aborted = false;
+    this.reason = undefined;
+  }
+  toString() {
+    return "[object AbortSignal]";
+  }
+  get [Symbol.toStringTag]() {
+    return "AbortSignal";
+  }
+  removeEventListener(name, handler) {
+    this.eventEmitter.removeListener(name, handler);
+  }
+  addEventListener(name, handler) {
+    this.eventEmitter.on(name, handler);
+  }
+  dispatchEvent(type) {
+    const event = { type, target: this };
+    const handlerName = `on${type}`;
+
+    if (typeof this[handlerName] === "function") this[handlerName](event);
+
+    this.eventEmitter.emit(type, event);
+  }
+  throwIfAborted() {
+    if (this.aborted) {
+      throw this.reason;
+    }
+  }
+  static abort(reason) {
+    const controller = new AbortController();
+    controller.abort();
+    return controller.signal;
+  }
+  static timeout(time) {
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(new Error("TimeoutError")), time);
+    return controller.signal;
+  }
+}
+class AbortController {
+  constructor() {
+    this.signal = new AbortSignal();
+  }
+  abort(reason) {
+    if (this.signal.aborted) return;
+
+    this.signal.aborted = true;
+
+    if (reason) this.signal.reason = reason;
+    else this.signal.reason = new Error("AbortError");
+
+    this.signal.dispatchEvent("abort");
+  }
+  toString() {
+    return "[object AbortController]";
+  }
+  get [Symbol.toStringTag]() {
+    return "AbortController";
+  }
+}
+
+module.exports = { AbortController, AbortSignal };
+
+
+/***/ }),
+
 /***/ 742:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -2194,6 +2269,14 @@ module.exports.implForWrapper = function (wrapper) {
 
 /***/ }),
 
+/***/ 361:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("events");
+
+/***/ }),
+
 /***/ 477:
 /***/ ((module) => {
 
@@ -4321,10 +4404,13 @@ function defaultOnOpen(response) {
     }
 }
 //# sourceMappingURL=fetch.js.map
+// EXTERNAL MODULE: ./node_modules/node-abort-controller/index.js
+var node_abort_controller = __webpack_require__(357);
 ;// CONCATENATED MODULE: ./src/index.js
 //#!/usr/bin/env node
 
 
+global.AbortController = node_abort_controller.AbortController
 const chatPath = 'https://chat9.fastgpt.me/api/openai/v1/chat/completions'
 const requestPayload = { 
     "messages": [
@@ -4339,11 +4425,11 @@ const requestPayload = {
     "frequency_penalty": 0, 
     "top_p": 1 
 }
-// const controller = new AbortController();
+const controller = new node_abort_controller.AbortController();
 const chatPayload = {
     method: "POST",
     body: JSON.stringify(requestPayload),
-    // signal: controller.signal,
+    signal: controller.signal,
     headers: {
         "Content-Type": "application/json",
         "x-requested-with":"XMLHttpRequest",
