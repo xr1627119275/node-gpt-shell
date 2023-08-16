@@ -1,6 +1,6 @@
 {
   "name": "gptshell",
-  "version": "0.0.13",
+  "version": "0.0.15",
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode=production",
@@ -10,6 +10,7 @@
   },
   "bin": {
     "ai": "./dist/index.js",
+    "ai-code": "./dist/index.js",
     "gptshell": "./dist/index.js"
   },
   "keywords": [],

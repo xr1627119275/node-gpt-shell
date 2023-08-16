@@ -153,6 +153,7 @@ function prettyObject(msg) {
 
 
 
+const argv = process.argv
 
 program
     .version(version)
@@ -161,9 +162,11 @@ program
     .option('-code,  --code', '代码模式')
     .action(async( message, options ) => {
         const isChat = options.chat
+        const [_, shellName] = argv 
+        if (shellName.endsWith('ai-code')) options.code = true
         if (options.code) messages[0].content = '您是代码专家，您的任务是提供有效的代码。返回 代码，不返回任何其他内容 - 不要在代码块、引号或其他任何内容中发送它，而只返回仅包含代码的纯文本。如果可能，其他说明可以放在注释中。该代码应执行以下操作：'
         chat(message.join(" "), isChat)
     })
-
-program.parse(process.argv);
+    
+program.parse(argv);
 
