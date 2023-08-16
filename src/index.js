@@ -6,13 +6,14 @@ import {
 import { version } from '../package.json'
 import { AbortController } from "node-abort-controller";
 global.AbortController = AbortController
-// import inquirer from 'inquirer'
+import chalk from 'chalk'
 const readline = require('readline')
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
 import { program }  from 'commander';
+import { execSync } from "child_process";
 
 const chatPath = 'https://chat9.fastgpt.me/api/openai/v1/chat/completions'
 
@@ -151,21 +152,45 @@ function prettyObject(msg) {
     return ["```json", msg, "```"].join("\n");
 }
 
+function compareVersions(version1, version2) {
+    const v1 = version1.split('.').map(Number);
+    const v2 = version2.split('.').map(Number);
+  
+    for (let i = 0; i < Math.max(v1.length, v2.length); i++) {
+      const num1 = v1[i] || 0;
+      const num2 = v2[i] || 0;
+  
+      if (num1 > num2) {
+        return 1;
+      } else if (num1 < num2) {
+        return -1;
+      }
+    }
+  
+    return 0;
+}
 
+function checkVersion() {
+    const latestVersion = execSync('npm view gptshell version --registry=http://registry.npmjs.org').toString().trim()
+    if (compareVersions(version, latestVersion) == -1) {
+        console.log(`${chalk.yellow('[Warning]')} You are using an old version of gptshell, please update to the latest version.\n`)
+        console.log(`${chalk.green('[Upgrade Command]')} npm i gptshell@${latestVersion} -g --registry=http://registry.npmjs.org\n`)
+    }
+}
+checkVersion()
 
 const argv = process.argv
-
 program
     .version(version)
-    .argument("<message...>", "请输入内容")
-    .option('-chat,  --chat', '聊天模式')
-    .option('-code,  --code', '代码模式')
-    .action(async( message, options ) => {
+    .argument("<content...>", "please input content")
+    .option('-chat,  --chat', 'chat')
+    .option('-code,  --code', 'code')
+    .action(async( content, options ) => {
         const isChat = options.chat
         const [_, shellName] = argv 
         if (shellName.endsWith('ai-code')) options.code = true
         if (options.code) messages[0].content = '您是代码专家，您的任务是提供有效的代码。返回 代码，不返回任何其他内容 - 不要在代码块、引号或其他任何内容中发送它，而只返回仅包含代码的纯文本。如果可能，其他说明可以放在注释中。该代码应执行以下操作：'
-        chat(message.join(" "), isChat)
+        chat(content.join(" "), isChat)
     })
     
 program.parse(argv);
