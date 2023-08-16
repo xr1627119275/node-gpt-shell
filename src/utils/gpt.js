@@ -12,7 +12,7 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-const chatPath = 'http://run-x.cn/api/openai/v1/chat/completions'
+const chatPath = 'http://xg1.xrdev.top:8088/api/openai/v1/chat/completions'
 
 export const initShellMessage = [
     { "role": "user", "content": "You are a Command Line Interface expert and your task is to provide functioning shell commands. Return a CLI command and nothing else - do not send it in a code block, quotes, or anything else, just the pure text CONTAINING ONLY THE COMMAND. If possible, return a one-line bash command or chain many commands together. Return ONLY the command ready to run in the terminal. The command should do the following:" },
