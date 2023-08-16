@@ -3,7 +3,7 @@
 import { checkVersion, version  } from './utils';
 import { program }  from 'commander';
 import { startServer } from "./http/server";
-import { messages, chat, initCodeMessage, initShellMessage  } from './utils/gpt';
+import { chat, initCodeMessage, initShellMessage  } from './utils/gpt';
 
 checkVersion()
 

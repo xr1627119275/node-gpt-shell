@@ -11413,7 +11413,7 @@ function objectToString(o) {
 /***/ 7151:
 /***/ ((module, exports, __webpack_require__) => {
 
-const nodeFetch = __webpack_require__(492)
+const nodeFetch = __webpack_require__(6292)
 const realFetch = nodeFetch.default || nodeFetch
 
 const fetch = function (url, options) {
@@ -59012,7 +59012,7 @@ exports.suggestSimilar = suggestSimilar;
 
 /***/ }),
 
-/***/ 492:
+/***/ 6292:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -61171,7 +61171,7 @@ var __webpack_exports__ = {};
 "use strict";
 
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = {"i8":"0.0.23"};
+const package_namespaceObject = {"i8":"0.0.24"};
 // EXTERNAL MODULE: external "child_process"
 var external_child_process_ = __webpack_require__(2081);
 ;// CONCATENATED MODULE: ./node_modules/chalk/source/vendor/ansi-styles/index.js
@@ -62144,7 +62144,7 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-const chatPath = 'https://chat9.fastgpt.me/api/openai/v1/chat/completions'
+const chatPath = 'http://run-x.cn/api/openai/v1/chat/completions'
 
 const initShellMessage = [
     { "role": "user", "content": "You are a Command Line Interface expert and your task is to provide functioning shell commands. Return a CLI command and nothing else - do not send it in a code block, quotes, or anything else, just the pure text CONTAINING ONLY THE COMMAND. If possible, return a one-line bash command or chain many commands together. Return ONLY the command ready to run in the terminal. The command should do the following:" },
