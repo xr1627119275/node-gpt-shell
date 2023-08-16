@@ -16,15 +16,15 @@ import { program }  from 'commander';
 
 const chatPath = 'https://chat9.fastgpt.me/api/openai/v1/chat/completions'
 
-const message =   [
+const messages =   [
     { "role": "user", "content": "You are a Command Line Interface expert and your task is to provide functioning shell commands. Return a CLI command and nothing else - do not send it in a code block, quotes, or anything else, just the pure text CONTAINING ONLY THE COMMAND. If possible, return a one-line bash command or chain many commands together. Return ONLY the command ready to run in the terminal. The command should do the following:" },
 ]
 
 
 function chat(msg, isChat) {
-    message.push(  { "role": "user", "content": msg}  )
+    messages.push(  { "role": "user", "content": msg}  )
     const requestPayload = {
-        "messages": message,
+        "messages": messages,
         // "messages": [{ "role": "system", "content": "\nYou are ChatGPT, a large language model trained by OpenAI.\nKnowledge cutoff: 2021-09\nCurrent model: gpt-3.5-turbo\nCurrent time: 2023/8/14 09:07:13\n" }, { "role": "user", "content": "1" } ],
         "stream": true,
         "model": "gpt-3.5-turbo", 
@@ -51,12 +51,14 @@ function chat(msg, isChat) {
         if (!finished && isChat) {
             finished = true
             console.log('')
-           message.push({ role: "system", content: responseText })
+           messages.push({ role: "system", content: responseText })
            rl.question('>>> ', (answer) => {
-               console.log('answer:', answer)
+               if (['exit', 'exit()', 'q', '.exit'].includes(answer)) return process.exit()
                chat(answer, true)
            })
+           return
         }
+        process.exit()
     }
     fetchEventSource(chatPath, {
         ...chatPayload,
@@ -150,13 +152,18 @@ function prettyObject(msg) {
 }
 
 
+
+
 program
     .version(version)
     .argument("<message...>", "请输入内容")
     .option('-chat,  --chat', '聊天模式')
+    .option('-code,  --code', '代码模式')
     .action(async( message, options ) => {
         const isChat = options.chat
+        if (options.code) messages[0].content = '您是代码专家，您的任务是提供有效的代码。返回 代码，不返回任何其他内容 - 不要在代码块、引号或其他任何内容中发送它，而只返回仅包含代码的纯文本。如果可能，其他说明可以放在注释中。该代码应执行以下操作：'
         chat(message.join(" "), isChat)
     })
 
 program.parse(process.argv);
+
