@@ -1,6 +1,9 @@
 import { version } from '../../package.json'
+import fs from 'fs'
 import { execSync } from "child_process";
+import path from "node:path";
 import chalk from 'chalk'
+import { log } from 'console';
 export function prettyObject(msg) {
 
     const obj = msg;
@@ -41,6 +44,21 @@ export function checkVersion() {
         console.log(`${chalk.yellow('[Warning]')} You are using an old version of gptshell, please update to the latest version.\n`)
         console.log(`${chalk.green('[Upgrade Command]')} npm i gptshell@${latestVersion} -g --registry=http://registry.npmjs.org\n`)
     }
+}
+
+
+const tokenFilePath = path.join(__dirname, 'token.txt');
+
+export function saveToken(token) {
+  fs.writeFileSync(tokenFilePath, token);
+  console.log('Token saved successfully.');
+}
+
+export function getToken() {
+  if (fs.existsSync(tokenFilePath)) {
+    return fs.readFileSync(tokenFilePath, 'utf-8');
+  }
+  return null;
 }
 
 export { version }

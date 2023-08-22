@@ -61171,9 +61171,15 @@ var __webpack_exports__ = {};
 "use strict";
 
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = {"i8":"0.0.25"};
+const package_namespaceObject = {"i8":"0.0.27"};
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __webpack_require__(7147);
+var external_fs_default = /*#__PURE__*/__webpack_require__.n(external_fs_);
 // EXTERNAL MODULE: external "child_process"
 var external_child_process_ = __webpack_require__(2081);
+;// CONCATENATED MODULE: external "node:path"
+const external_node_path_namespaceObject = require("node:path");
+var external_node_path_default = /*#__PURE__*/__webpack_require__.n(external_node_path_namespaceObject);
 ;// CONCATENATED MODULE: ./node_modules/chalk/source/vendor/ansi-styles/index.js
 const ANSI_BACKGROUND_OFFSET = 10;
 
@@ -61834,7 +61840,12 @@ const chalkStderr = createChalk({level: stderrColor ? stderrColor.level : 0});
 
 /* harmony default export */ const source = (chalk);
 
+;// CONCATENATED MODULE: external "console"
+const external_console_namespaceObject = require("console");
 ;// CONCATENATED MODULE: ./src/utils/index.js
+
+
+
 
 
 
@@ -61878,6 +61889,21 @@ function checkVersion() {
         console.log(`${source.yellow('[Warning]')} You are using an old version of gptshell, please update to the latest version.\n`)
         console.log(`${source.green('[Upgrade Command]')} npm i gptshell@${latestVersion} -g --registry=http://registry.npmjs.org\n`)
     }
+}
+
+
+const tokenFilePath = external_node_path_default().join(__dirname, 'token.txt');
+
+function saveToken(token) {
+  external_fs_default().writeFileSync(tokenFilePath, token);
+  console.log('Token saved successfully.');
+}
+
+function getToken() {
+  if (external_fs_default().existsSync(tokenFilePath)) {
+    return external_fs_default().readFileSync(tokenFilePath, 'utf-8');
+  }
+  return null;
 }
 
 
@@ -62144,7 +62170,7 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-const chatPath = 'http://xg1.xrdev.top:8088/api/openai/v1/chat/completions'
+const chatPath = 'https://mgpt.xrdev.top/api/openai/v1/chat/completions'
 
 const initShellMessage = [
     { "role": "user", "content": "You are a Command Line Interface expert and your task is to provide functioning shell commands. Return a CLI command and nothing else - do not send it in a code block, quotes, or anything else, just the pure text CONTAINING ONLY THE COMMAND. If possible, return a one-line bash command or chain many commands together. Return ONLY the command ready to run in the terminal. The command should do the following:" },
@@ -62190,6 +62216,7 @@ function chat(msg, isChat = false, initMessage = undefined, stream = true) {
             headers: {
                 "Content-Type": "application/json",
                 "x-requested-with":"XMLHttpRequest",
+                "Authorization": "Bearer nk-"+getToken()
             }
         };
         if (!stream) {
@@ -62352,6 +62379,7 @@ const startServer = function(port) {
 
 
 
+
 checkVersion()
 
 const argv = process.argv
@@ -62360,6 +62388,7 @@ program
     .version(package_namespaceObject.i8)
     .argument("<content...>", "please input content")
     .option('-chat,  --chat', 'chat')
+    .option('-token,  --token <token>', 'set token')
     .option('-code,  --code', 'ai code')
     .option('-shell,  --shell', 'ai shell')
     .action(async( content, options ) => {
@@ -62368,6 +62397,14 @@ program
             startServer(3000)
             return
         }
+        if (options.token) saveToken(options.token)
+
+        const token = await getToken()
+        if (!token) {
+            console.log('token is not exist')
+            return
+        }
+
         const isChat = options.chat
         const [_, shellName] = argv
         if (shellName.endsWith('ai-code')) options.code = true
