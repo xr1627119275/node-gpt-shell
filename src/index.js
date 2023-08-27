@@ -2,7 +2,7 @@
 
 import { checkVersion, version, getToken, saveToken  } from './utils';
 import { program }  from 'commander';
-
+import inquirer from "inquirer";
 import { startServer } from "./http/server";
 import { chat, initCodeMessage, initShellMessage  } from './utils/gpt';
 
@@ -18,16 +18,27 @@ program
     .option('-code,  --code', 'ai code')
     .option('-shell,  --shell', 'ai shell')
     .action(async( content, options ) => {
-        if (content[0] === 'server') {
-            global.isServer = true
-            startServer(3000)
-            return
-        }
+
         if (options.token) saveToken(options.token)
 
         const token = await getToken()
         if (!token) {
             console.log('token is not exist')
+            await inquirer
+                .prompt([
+                    {
+                        type: "input",
+                        message: "token: ",
+                        name: "token",
+                    },
+                ])
+                .then(( answers ) => {
+                    saveToken(answers.token)
+                })
+        }
+        if (content[0] === 'server') {
+            global.isServer = true
+            startServer(3000)
             return
         }
 
@@ -39,7 +50,7 @@ program
         if (options.code) initMessage = initCodeMessage
         if (options.shell) initMessage = initShellMessage
         chat(content.join(" "), isChat, initMessage)
-        
+
     })
 
 program.parse(argv);

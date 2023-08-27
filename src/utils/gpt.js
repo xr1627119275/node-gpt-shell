@@ -6,6 +6,7 @@ import {
     EventStreamContentType,
     fetchEventSource,
 } from "@ai-zen/node-fetch-event-source";
+import chalk from 'chalk'
 const readline = require('readline')
 const rl = readline.createInterface({
     input: process.stdin,
@@ -27,7 +28,7 @@ export const messages = [
 
 function sysWrite(text) {
     if (global.isServer) return
-    process.stdout.write(text)
+    process.stdout.write(chalk.green(text))
 }
 
 export function chat(msg, isChat = false, initMessage = undefined, stream = true) {
@@ -43,11 +44,11 @@ export function chat(msg, isChat = false, initMessage = undefined, stream = true
             "messages": messages,
             // "messages": [{ "role": "system", "content": "\nYou are ChatGPT, a large language model trained by OpenAI.\nKnowledge cutoff: 2021-09\nCurrent model: gpt-3.5-turbo\nCurrent time: 2023/8/14 09:07:13\n" }, { "role": "user", "content": "1" } ],
             "stream": stream,
-            "model": "gpt-3.5-turbo", 
-            "temperature": 0.5, 
-            "presence_penalty": 0, 
-            "frequency_penalty": 0, 
-            "top_p": 1 
+            "model": "gpt-3.5-turbo",
+            "temperature": 0.5,
+            "presence_penalty": 0,
+            "frequency_penalty": 0,
+            "top_p": 1
         }
         const controller = new AbortController();
         const chatPayload = {
@@ -66,11 +67,11 @@ export function chat(msg, isChat = false, initMessage = undefined, stream = true
                 if (error) throw new Error(error);
                 try {
                     body = JSON.parse(body)
-                    resolve(body.choices[0].message.content + '\n') 
+                    resolve(body.choices[0].message.content + '\n')
                 } catch (error) {
                     resolve(error)
                 }
-                
+
             });
             return
         }
@@ -80,13 +81,12 @@ export function chat(msg, isChat = false, initMessage = undefined, stream = true
         async function finish() {
             index = 0
             if (!finished) {
-                resolve(responseText)   
+                resolve(responseText)
             }
             if (!finished && isChat) {
                 finished = true
-                console.log('')
                messages.push({ role: "system", content: responseText })
-               rl.question('>>> ', (answer) => {
+               rl.question(chalk.blue('>> '), (answer) => {
                    if (['exit', 'exit()', 'q', '.exit'].includes(answer)) return process.exit()
                    chat(answer, true)
                })
@@ -105,12 +105,12 @@ export function chat(msg, isChat = false, initMessage = undefined, stream = true
                 //     "[OpenAI] request response content type: ",
                 //     contentType,
                 // );
-    
+
                 if (contentType?.startsWith("text/plain")) {
                     responseText = await res.clone().text();
                     return finish();
                 }
-    
+
                 if (
                     !res.ok ||
                     !res.headers
@@ -124,17 +124,17 @@ export function chat(msg, isChat = false, initMessage = undefined, stream = true
                         const resJson = await res.clone().json();
                         extraInfo = prettyObject(resJson);
                     } catch { }
-    
+
                     if (res.status === 401) {
                         responseTexts.push("Locale.Error.Unauthorized");
                     }
-    
+
                     if (extraInfo) {
                         responseTexts.push(extraInfo);
                     }
-    
+
                     responseText = responseTexts.join("\n\n");
-    
+
                     return finish();
                 }
             },
@@ -144,7 +144,7 @@ export function chat(msg, isChat = false, initMessage = undefined, stream = true
                         sysWrite("\n")
                         finish();
                     }, ++index * 36)
-                    return 
+                    return
                 }
                 const text = msg.data;
                 try {
@@ -171,5 +171,5 @@ export function chat(msg, isChat = false, initMessage = undefined, stream = true
             openWhenHidden: true,
         });
     })
-    
+
 }
