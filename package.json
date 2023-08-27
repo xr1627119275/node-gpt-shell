@@ -1,6 +1,6 @@
 {
   "name": "gptshell",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "main": "index.js",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack ",
