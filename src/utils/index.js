@@ -3,7 +3,6 @@ import fs from 'fs'
 import { execSync } from "child_process";
 import path from "path";
 import chalk from 'chalk'
-import { log } from 'console';
 export function prettyObject(msg) {
 
     const obj = msg;
@@ -59,6 +58,12 @@ export function getToken() {
     return fs.readFileSync(tokenFilePath, 'utf-8');
   }
   return null;
+}
+
+// 判断 express 的来源是否是浏览器
+export  function isBrowser(req) {
+  const userAgent = req.headers['user-agent'].toLowerCase()
+  return ['mozilla', 'chrome', 'safari'].some(item => userAgent.includes(item))
 }
 
 export { version }
