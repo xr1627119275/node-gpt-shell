@@ -120,11 +120,11 @@ export function chat(msg, isChat = false, initMessage = undefined, stream = true
                 ) {
                     const responseTexts = [responseText];
                     let extraInfo = await res.clone().text();
+                    sysWrite(chalk.red(extraInfo) + '\n')
                     try {
                         const resJson = await res.clone().json();
                         extraInfo = prettyObject(resJson);
                     } catch { }
-
                     if (res.status === 401) {
                         responseTexts.push("Locale.Error.Unauthorized");
                     }
